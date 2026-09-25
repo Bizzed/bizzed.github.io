@@ -67,15 +67,7 @@ Set these in Vercel project settings for production/preview.
 
 ## Deployment
 
-Connect this repo to Vercel; it will detect Astro and deploy automatically. Staging URL will look like `bizzed-marketing-site.vercel.app`. DNS cutover to `bizzed.ai` happens when Andy gives the green light.
-
-## TODO before launch
-
-- [ ] Export `bizzed-dashboard.png` and other images from the live site → `public/`.
-- [ ] Replace placeholder FAQ answers with copy from Janine.
-- [ ] Eyedropper the live site for exact brand colors; update `tailwind.config.mjs`.
-- [ ] Confirm webhook payload shape with Andy.
-- [ ] Wait for Tanisha's brand style guide (May 18+) and apply.
+Follow Github pages steps for deployment
 
 ## Adding a blog post later
 
