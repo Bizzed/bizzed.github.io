@@ -1,0 +1,38 @@
+---
+const features = [
+  {
+    title: 'Build the Analysis Flow',
+    body: 'Connect financials, legal docs, and seller notes into a logical workflow that outputs a clear "Buy" or "Walk Away" recommendation in minutes.',
+  },
+  {
+    title: 'Eliminate the Manual Hunt',
+    body: 'Stop digging through email threads and portals. Connect your deal sources once and let our AI agents unify the data into a single source of truth for your analysis.',
+  },
+  {
+    title: 'Real-Time Deal Screening',
+    body: "Don't wait days for a black-box report. Watch Bizzed AI scrub your deal documents in real-time, flagging anomalies and verifying seller claims as it builds your final investment-grade analysis.",
+  },
+];
+---
+
+<section class="mx-auto max-w-container px-6 py-20 md:py-28">
+  <div class="text-center max-w-3xl mx-auto">
+    <p class="text-sm font-medium uppercase tracking-wider text-accent">How it works</p>
+    <h2 class="mt-3 font-display text-3xl md:text-5xl font-semibold tracking-tight">
+      One Unified Brain for Your Deal
+    </h2>
+    <p class="mt-5 text-lg text-ink-muted">
+      Bizzed AI works like a team of bankers, lawyers, and accountants, processing
+      thousands of data points to generate investment-grade reports instantly.
+    </p>
+  </div>
+
+  <div class="mt-16 grid gap-6 md:grid-cols-3">
+    {features.map((f) => (
+      <article class="rounded-xl border border-border bg-bg-card p-6 transition-colors hover:border-ink-muted/30">
+        <h3 class="font-display text-xl font-semibold">{f.title}</h3>
+        <p class="mt-3 text-ink-muted leading-relaxed">{f.body}</p>
+      </article>
+    ))}
+  </div>
+</section>

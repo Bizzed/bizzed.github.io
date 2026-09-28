@@ -1,0 +1,63 @@
+---
+// Native <details>/<summary> for the accordion — zero JS, accessible by default.
+// Replace placeholder answers with real copy from Janine/Andy.
+const faqs = [
+  {
+    q: 'How is this different from just hiring an accountant or a lawyer?',
+    a: 'Bizzed AI augments your existing advisors with instant, data-driven analysis. We process thousands of data points in minutes instead of weeks, surfacing risks and add-back discrepancies that traditional due diligence can miss — so when you do bring in a CPA or attorney, you already know where to look.',
+  },
+  {
+    q: 'Can\u2019t I just use ChatGPT for this?',
+    a: 'General-purpose LLMs are not trained on M&A workflows or financial reconciliation. Bizzed uses specialized agents tuned for due diligence — SDE verification, EBITDA add-back checks, P&L vs tax return audits — with structured outputs you can take to a lender.',
+  },
+  {
+    q: 'What kind of "dead bodies" does Bizzed actually find?',
+    a: 'Inventory bloat, contract labor margin risk, revenue anomalies, payroll discrepancies, invalid add-backs, financing eligibility gaps. Real findings from real deal rooms.',
+  },
+  {
+    q: 'What information do I need to provide?',
+    a: 'Typical deal documents: P&L statements, tax returns, seller notes, bank statements, and any legal docs (LOI, asset purchase agreements). The more you upload, the better the reconciliation.',
+  },
+  {
+    q: 'Who actually built this?',
+    a: 'A team of operators who have lived through small-business acquisitions. We built Bizzed because we wanted it for ourselves first.',
+  },
+  {
+    q: 'How much does it cost?',
+    a: 'Bizzed is currently in public beta. Apply via the Get Started form and we will share pricing during onboarding.',
+  },
+];
+---
+
+<section class="mx-auto max-w-container px-6 py-20 md:py-28 border-t border-border-subtle">
+  <div class="text-center max-w-3xl mx-auto">
+    <p class="text-sm font-medium uppercase tracking-wider text-accent">FAQs</p>
+    <h2 class="mt-3 font-display text-3xl md:text-5xl font-semibold tracking-tight">
+      Frequently Asked Questions
+    </h2>
+    <p class="mt-5 text-lg text-ink-muted">
+      Everything you need to know about Bizzed. Still couldn't find what
+      you were looking for?{' '}
+      <a href="mailto:janine@bizzed.ai" class="text-ink underline underline-offset-4">
+        Contact us
+      </a>.
+    </p>
+  </div>
+
+  <div class="mt-12 max-w-3xl mx-auto divide-y divide-border-subtle border-y border-border-subtle">
+    {faqs.map((item) => (
+      <details class="group py-5">
+        <summary class="flex cursor-pointer items-center justify-between gap-4 font-medium text-ink list-none">
+          <span>{item.q}</span>
+          <span
+            class="shrink-0 text-ink-muted transition-transform group-open:rotate-45"
+            aria-hidden="true"
+          >
+            +
+          </span>
+        </summary>
+        <p class="mt-4 text-ink-muted leading-relaxed">{item.a}</p>
+      </details>
+    ))}
+  </div>
+</section>

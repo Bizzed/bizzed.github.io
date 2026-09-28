@@ -1,0 +1,38 @@
+---
+const features = [
+  {
+    title: 'LLM Agent Selector',
+    body: 'Replace general-purpose AI with dedicated agents trained for due diligence. Run targeted audits to expose inventory bloat, reconcile cash flow, and model real-world downside scenarios.',
+  },
+  {
+    title: 'Conversational Due Diligence',
+    body: 'Query your deal data like a human expert. Ask complex "What If" questions and get instant, data-backed downside models.',
+  },
+  {
+    title: 'One Source of Acquisition Truth',
+    body: 'Sellers tell stories; tax returns tell the truth. Bizzed reconciles your entire deal room into one high-fidelity model, identifying hidden risks and add-back discrepancies that traditional due diligence misses.',
+  },
+];
+---
+
+<section class="mx-auto max-w-container px-6 py-20 md:py-28 border-t border-border-subtle">
+  <div class="text-center max-w-3xl mx-auto">
+    <p class="text-sm font-medium uppercase tracking-wider text-accent">Features</p>
+    <h2 class="mt-3 font-display text-3xl md:text-5xl font-semibold tracking-tight">
+      Built for Serious Acquirers
+    </h2>
+    <p class="mt-5 text-lg text-ink-muted">
+      Stop manual digging. Analyze, audit, and model your next acquisition with a
+      powerful interface designed to find the truth behind the numbers.
+    </p>
+  </div>
+
+  <div class="mt-16 grid gap-6 md:grid-cols-3">
+    {features.map((f) => (
+      <article class="rounded-xl border border-border bg-bg-card p-8">
+        <h3 class="font-display text-2xl font-semibold">{f.title}</h3>
+        <p class="mt-4 text-ink-muted leading-relaxed">{f.body}</p>
+      </article>
+    ))}
+  </div>
+</section>
