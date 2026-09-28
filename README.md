@@ -1,74 +1,112 @@
 # bizzed.github.io
-marketing site for hosting on github pages
 
-The replatformed `bizzed.ai` marketing site, owned by BizzedAI (not the original vendor).
+The `bizzed.ai` marketing site, packaged as a fully static build for GitHub
+Pages, with form submissions handled by a Cloudflare Worker.
 
 ## Why this exists
 
-This is a detour from the /bizzed-marketing-site website, rearchitecting a chunk of that stack for github pages static deployment while also considering some data hygiene practices
+Replatformed from `/bizzed-marketing-site`, which ran on Vercel and used a
+serverless route to forward form submissions. GitHub Pages serves static files
+only, so that route is gone: the browser now posts to a Cloudflare Worker,
+which is the single trusted hop in front of the n8n webhook.
 
 ## Stack
 
-- **[Astro](https://astro.build)** — content-focused, ships near-zero JS by default, excellent SEO.
-- **Tailwind CSS** — utility-first styling with brand tokens in `tailwind.config.mjs`.
-- **Github Pages** — static pages hosting
-- **Cloudflare** - captcha/endpoint protection since the `/post` will be to a non-Bizzed.ai endpoint
+- **[Astro](https://astro.build)** — every page prerendered, no adapter, no SSR.
+- **Tailwind CSS** — brand tokens in `tailwind.config.mjs`.
+- **GitHub Pages** — static hosting, deployed by GitHub Actions on push to `main`.
+- **Cloudflare Workers** — the form endpoint.
+- **Cloudflare Turnstile** — submission verification.
 - **TypeScript** — strict mode.
+
+## Architecture
+
+```
+browser  ──POST JSON──▶  Cloudflare Worker  ──▶  n8n webhook
+(static page)              verifies Turnstile
+                           holds the secrets
+```
+
+The Worker exists because a static page cannot keep a secret. It verifies the
+Turnstile token server side, confirms the challenge was solved on one of our
+own hostnames, and attaches the webhook credentials. `APPLICATION_WEBHOOK_URL`
+and `APPLICATION_WEBHOOK_SECRET` live only in the Worker and are never shipped
+to a browser.
+
+The JSON envelope sent to n8n is unchanged from the previous Vercel
+implementation, so nothing downstream needed reconfiguring.
 
 ## Quickstart
 
 ```bash
-# Node 18+ required
 npm install
-cp .env.example .env
-# Edit .env and set APPLICATION_WEBHOOK_URL (get from Andy)
-npm run dev
+cp .env.example .env   # public build values only
+npm run dev            # http://localhost:4321
 ```
 
-Open http://localhost:4321.
+`.env.example` is prefilled with Cloudflare's documented Turnstile test site
+key, which always passes, so the widget works locally without creating anything
+in Cloudflare first.
 
-## Project structure
-
-```
-src/
-├── components/        # Section components (Hero, FAQ, etc.)
-├── layouts/           # BaseLayout with meta tags and shell
-├── pages/
-│   ├── index.astro    # Homepage
-│   ├── get-started.astro   # Application form
-│   ├── api/
-│   │   └── applications.ts # Form → webhook forwarder
-│   ├── blog/          # Placeholder, ready for content collection
-│   └── resources/     # Placeholder
-├── content/
-│   ├── config.ts      # Blog schema (Zod)
-│   └── blog/          # Markdown posts go here
-└── styles/
-    └── global.css
-```
-
-## How form submissions work
-
-1. User fills out the form at `/get-started`.
-2. JS (or a native form POST) submits to `/api/applications`.
-3. `applications.ts` validates, drops honeypot submissions, and POSTs JSON to `APPLICATION_WEBHOOK_URL`.
-4. The webhook (owned by BizzedAI) handles storage and downstream automation.
-
-No third-party form service touches the data. If `APPLICATION_WEBHOOK_URL` is not set, the endpoint returns 500 so we catch misconfiguration in staging.
+To exercise a real submission end to end, run the Worker from its own repo (see
+below) and point `PUBLIC_FORM_ENDPOINT` in `.env` at `http://localhost:8787`.
 
 ## Environment variables
 
-| Variable | Required | Purpose |
-|---|---|---|
-| `APPLICATION_WEBHOOK_URL` | Yes | Where form submissions are POSTed. |
-| `APPLICATION_WEBHOOK_SECRET` | No | If set, sent as `Authorization: Bearer <secret>` to the webhook. |
+### Site build — public
 
-Set these in Vercel project settings for production/preview.
+Compiled into the served HTML. Treat as world-readable. In CI these come from
+repository **variables** (not secrets), set under
+Settings → Secrets and variables → Actions → Variables.
+
+| Variable | Purpose |
+|---|---|
+| `PUBLIC_FORM_ENDPOINT` | The Worker URL the form posts to. |
+| `PUBLIC_TURNSTILE_SITE_KEY` | Turnstile **site** key (the public half). |
+
+### Worker — secret
+
+Not in this repo. The Worker holds `TURNSTILE_SECRET_KEY`,
+`APPLICATION_WEBHOOK_URL` and `APPLICATION_WEBHOOK_SECRET` as Cloudflare
+secrets. See its README for details.
+
+## The Worker
+
+The form endpoint lives in the **`bizzed-marketing-site`** repo under `worker/`,
+not here, because this repo may need to be public for GitHub Pages while that
+one is private.
+
+It is an entirely separate deployable — this site just posts to a URL, and has
+no build or runtime dependency on it. See `worker/README.md` there for its
+commands and configuration.
 
 ## Deployment
 
-Follow Github pages steps for deployment
+Push to `main`. `.github/workflows/deploy.yml` builds and publishes to Pages.
+Enable it once under Settings → Pages → Source → **GitHub Actions**.
+
+The Worker deploys independently, from its own repo.
+
+## Custom domain
+
+While the site is served from `bizzed.github.io`, `astro.config.mjs` sets
+`site` to that origin so canonical URLs and Open Graph tags are correct.
+
+At DNS cutover to `bizzed.ai`:
+
+1. Change `site` in `astro.config.mjs` to `https://bizzed.ai`.
+2. Add `public/CNAME` containing `bizzed.ai`.
+3. Point DNS at GitHub Pages and set the custom domain under Settings → Pages.
+4. Add `https://bizzed.ai` to `ALLOWED_ORIGINS` and `bizzed.ai` to
+   `EXPECTED_HOSTNAMES` in the Worker's `wrangler.toml` (in the
+   `bizzed-marketing-site` repo), then redeploy it.
+5. Add the new hostname to the Turnstile widget in the Cloudflare dashboard.
+
+Step 4 is easy to forget and will break the form silently — the page loads fine
+and submissions fail at the Worker.
 
 ## Adding a blog post later
 
-Drop a `.md` or `.mdx` file in `src/content/blog/` with frontmatter matching the schema in `src/content/config.ts`. Then build out a `[slug].astro` page that pulls from the collection.
+Drop a `.md` or `.mdx` file in `src/content/blog/` with frontmatter matching the
+schema in `src/content.config.ts`, then build a `[slug].astro` page that reads
+from the collection.

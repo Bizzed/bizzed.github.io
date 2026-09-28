@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: theme('colors.bg.DEFAULT');
+  color: theme('colors.ink.DEFAULT');
+  font-family: theme('fontFamily.sans');
+}
+
+/* Subtle grid backdrop seen on the current site's hero. Refine later. */
+.grid-backdrop {
+  background-image:
+    linear-gradient(theme('colors.border.subtle') 1px, transparent 1px),
+    linear-gradient(90deg, theme('colors.border.subtle') 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 75%);
+}

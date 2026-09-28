@@ -1,0 +1,45 @@
+---
+// Hero — mirrors the current homepage:
+// "Now in Private Alpha" pill, headline, sub, CTA, dashboard image.
+---
+
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 grid-backdrop opacity-40 pointer-events-none" aria-hidden="true"></div>
+
+  <div class="relative mx-auto max-w-container px-6 pt-20 pb-16 md:pt-28 md:pb-24 text-center">
+    <a
+      href="/get-started"
+      class="inline-flex items-center rounded-full border border-[#30B2BB] bg-[#D9F0F2] px-3 py-1 text-xs font-medium text-[#30B2BB] transition-opacity hover:opacity-80"
+    >
+      Now in Private Alpha
+    </a>
+
+    <h1 class="mt-6 font-display text-4xl md:text-6xl font-semibold tracking-tight leading-[1.05] max-w-4xl mx-auto">
+      The All-in-One Command Center for AI-Powered Business Acquisition.
+    </h1>
+
+    <p class="mt-6 text-lg md:text-xl text-ink-muted max-w-2xl mx-auto">
+      Transform your acquisition process with AI-driven insights and intelligent
+      analysis that delivers results in minutes, not months.
+    </p>
+
+    <div class="mt-8 flex items-center justify-center">
+      <a
+        href="/get-started"
+        class="inline-flex items-center rounded-md bg-ink text-bg px-6 py-3 text-base font-medium hover:bg-ink-soft transition-colors"
+      >
+        Get Started
+      </a>
+    </div>
+
+    <div class="mt-16 md:mt-20">
+      <!-- TODO: replace with the current bizzed-dashboard.png once exported -->
+      <img
+        src="/bizzed-dashboard.png"
+        alt="Bizzed AI dashboard"
+        class="mx-auto rounded-xl border border-border shadow-2xl shadow-black/50 max-w-full"
+        loading="eager"
+      />
+    </div>
+  </div>
+</section>

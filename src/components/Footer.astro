@@ -1,0 +1,36 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-border-subtle mt-32">
+  <div class="mx-auto max-w-container px-6 py-12">
+    <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+      <div>
+        <a href="/" class="font-display text-2xl font-semibold tracking-tight">Bizzed</a>
+        <p class="mt-2 text-sm text-ink-muted">Due Diligence, Reimagined</p>
+      </div>
+      <a
+        href="/get-started"
+        class="inline-flex items-center self-start md:self-auto rounded-md border border-border px-5 py-2.5 text-sm font-medium hover:bg-bg-card transition-colors"
+      >
+        Get Started
+      </a>
+    </div>
+    <div class="mt-10 flex flex-col-reverse gap-4 md:flex-row md:items-center md:justify-between text-sm text-ink-muted">
+      <p>© {year} Bizzed AI. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <a href="https://x.com/BizzedAi" target="_blank" rel="noopener" aria-label="Bizzed on X">
+          X
+        </a>
+        <a
+          href="https://www.linkedin.com/company/bizzed-ai/"
+          target="_blank"
+          rel="noopener"
+          aria-label="Bizzed on LinkedIn"
+        >
+          LinkedIn
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
