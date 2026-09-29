@@ -89,15 +89,42 @@ The Worker deploys independently, from its own repo.
 
 ## Custom domain
 
-While the site is served from `bizzed.github.io`, `astro.config.mjs` sets
-`site` to that origin so canonical URLs and Open Graph tags are correct.
+The site is served at **https://www.bizzed.ai**, with the apex `bizzed.ai`
+redirecting to it. `astro.config.mjs` sets `site` to that origin so canonical
+URLs, `og:url` and `og:image` all resolve against the real host.
 
-At DNS cutover to `bizzed.ai`:
+DNS lives at GoDaddy, not Cloudflare:
 
-1. Change `site` in `astro.config.mjs` to `https://bizzed.ai`.
-2. Add `public/CNAME` containing `bizzed.ai`.
+| Record | Value |
+|---|---|
+| `bizzed.ai` A ×4 | `185.199.108.153` … `185.199.111.153` |
+| `www` CNAME | `bizzed.github.io.` |
+
+The apex must contain **only** those four GitHub IPs. A stray record — for
+example one left behind by a previous host — makes certificate validation fail,
+and GitHub does not retry on its own.
+
+### If HTTPS is not working
+
+GitHub checks DNS once, when the custom domain is set, and gives up silently if
+that check fails. Fixing DNS afterwards does not re-trigger it. Clear the custom
+domain under Settings → Pages, save, then re-enter it: that forces a fresh check.
+Watch for the certificate to appear with:
+
+```bash
+gh api repos/Bizzed/bizzed.github.io/pages --jq '{cert: .https_certificate.state, enforced: .https_enforced}'
+```
+
+"Enforce HTTPS" stays greyed out until `state` is `approved`. Tick it once it
+becomes available, or plain HTTP keeps being served and browsers show a "Not
+Secure" warning.
+
+### When the domain changes again
+
+1. Change `site` in `astro.config.mjs`.
+2. Update `public/CNAME`.
 3. Point DNS at GitHub Pages and set the custom domain under Settings → Pages.
-4. Add `https://bizzed.ai` to `ALLOWED_ORIGINS` and `bizzed.ai` to
+4. Add the new origin to `ALLOWED_ORIGINS` and its hostname to
    `EXPECTED_HOSTNAMES` in the Worker's `wrangler.toml` (in the
    `bizzed-marketing-site` repo), then redeploy it.
 5. Add the new hostname to the Turnstile widget in the Cloudflare dashboard.
