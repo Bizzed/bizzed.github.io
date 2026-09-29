@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
+import sitemap from '@astrojs/sitemap';
 
 // Fully static — no adapter, no server routes. Every page is prerendered to
 // HTML and served by GitHub Pages.
@@ -20,6 +21,16 @@ export default defineConfig({
   integrations: [
     tailwind({
       applyBaseStyles: false,
+    }),
+    // Emits sitemap-index.xml and sitemap-0.xml, both built from `site` above.
+    //
+    // /blog and /resources are excluded while they are still "Coming soon"
+    // stubs — submitting empty pages to search engines earns nothing and
+    // counts as thin content. Drop them from this filter once they have real
+    // content.
+    sitemap({
+      filter: (page) =>
+        !page.includes('/blog') && !page.includes('/resources'),
     }),
   ],
 });

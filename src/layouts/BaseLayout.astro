@@ -12,7 +12,14 @@ export interface Props {
 const {
   title = 'Bizzed AI',
   description = 'Streamline the entire acquisition process with intelligent automation and real-time insights',
-  ogImage = '/main-banner.png',
+  // Replaces /main-banner.png, which was never exported and returned a 404, so
+  // every share preview had a broken image.
+  //
+  // This asset is 400x400. It is square, so twitter:card below is "summary"
+  // rather than "summary_large_image" — the wide card expects roughly 1.91:1
+  // and letterboxes a square. Swap in a 1200x630 version and switch the card
+  // back to summary_large_image when one exists.
+  ogImage = '/bizzed-og_siteimage-@400.png',
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
@@ -36,10 +43,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={new URL(ogImage, Astro.site).toString()} />
+    <meta property="og:image:alt" content="Bizzed AI" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(ogImage, Astro.site).toString()} />
