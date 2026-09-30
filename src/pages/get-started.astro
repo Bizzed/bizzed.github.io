@@ -321,7 +321,7 @@ const timelines = [
             id="newsletterOptIn"
             name="newsletterOptIn"
             type="checkbox"
-            value="yes"
+            value="true"
             class="mt-0.5 h-4 w-4 shrink-0 rounded border-border text-accent focus:ring-1 focus:ring-accent"
           />
           <span class="text-sm text-ink-muted">
@@ -423,12 +423,17 @@ const timelines = [
         'financingStatus',
         'closingTimeline',
         'referralSource',
-        // An unchecked box is absent from FormData entirely, so this arrives as
-        // '' rather than 'yes'. Empty means not opted in.
         'newsletterOptIn',
         'company_website_url',
         'required__fill_out',
       ];
+
+      // Sent as the strings "true" / "false" rather than a JSON boolean, so
+      // every value in `data` stays a string and the payload keeps one uniform
+      // shape. An unticked box is absent from FormData altogether, which would
+      // otherwise arrive as "" and leave the receiver with three states to
+      // handle instead of two.
+      const BOOLEAN_FIELDS = ['newsletterOptIn'];
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -449,6 +454,7 @@ const timelines = [
 
         const data = {};
         for (const name of FIELDS) data[name] = String(fd.get(name) ?? '').trim();
+        for (const name of BOOLEAN_FIELDS) data[name] = data[name] === 'true' ? 'true' : 'false';
 
         const payload = {
           turnstileToken: token,
