@@ -315,6 +315,21 @@ const timelines = [
         </div>
       </fieldset>
 
+      <div>
+        <label for="newsletterOptIn" class="flex items-start gap-3 cursor-pointer">
+          <input
+            id="newsletterOptIn"
+            name="newsletterOptIn"
+            type="checkbox"
+            value="yes"
+            class="mt-0.5 h-4 w-4 shrink-0 rounded border-border text-accent focus:ring-1 focus:ring-accent"
+          />
+          <span class="text-sm text-ink-muted">
+            Send me Bizzed research on acquisitions and market trends.
+          </span>
+        </label>
+      </div>
+
       <div class="hidden" aria-hidden="true">
         <label>
           Company website
@@ -408,6 +423,9 @@ const timelines = [
         'financingStatus',
         'closingTimeline',
         'referralSource',
+        // An unchecked box is absent from FormData entirely, so this arrives as
+        // '' rather than 'yes'. Empty means not opted in.
+        'newsletterOptIn',
         'company_website_url',
         'required__fill_out',
       ];
@@ -455,7 +473,7 @@ const timelines = [
             body: JSON.stringify(payload),
           });
           if (!res.ok) throw new Error('Request failed: ' + res.status);
-          show('Thanks — we received your application. Janine will be in touch shortly.', true);
+          show('Thanks! We received your note and will be in touch shortly.', true);
           form.reset();
         } catch (err) {
           show('Something went wrong. Please email janine@bizzed.ai and we will follow up.', false);
